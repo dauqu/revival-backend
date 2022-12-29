@@ -38,6 +38,7 @@ const userSchema = new Schema({
     },
     referred_by: {
         type: String,
+        default: null
     },
     total_earning: {
         type: Number,

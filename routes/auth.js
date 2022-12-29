@@ -56,11 +56,7 @@ router.post("/register", async (req, res) => {
 
         // //hash password
         const hashed_password = await bcrypt.hash(password, 10);
-
-        console.log(referal);
-
-
-
+        
         //check referal
         // const findReferal = await User.findOne({ username: referal });
         // if (!findReferal) {
