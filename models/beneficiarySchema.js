@@ -3,6 +3,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var beneficiarySchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     name: {
         type: String,
         required: true,

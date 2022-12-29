@@ -14,6 +14,11 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    profile: {
+        type: String,
+        default: "https://placeimg.com/192/192/people",
+        required: true
+    },
     country: {
         type: String,
         required: true
@@ -39,7 +44,6 @@ const userSchema = new Schema({
     },
     referred_by: {
         type: mongoose.Types.ObjectId,
-        required: true,
         ref: "User"
     },
     total_earning: {

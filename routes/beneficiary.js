@@ -1,10 +1,20 @@
 const router = require("express").Router();
 const Beneficiary = require("../models/beneficiarySchema");
+const jwt = require("jsonwebtoken");
 
 // get all beneficiaries
 router.get("/", async (req, res) => {
     try {
-        const beneficiaries = await Beneficiary.find().sort({ createdAt: -1 });
+        const token = req.cookies.token || req.headers['token'] || req.body.token;
+        if(!token || token === null || token === undefined){
+            return res.json({message: "Unauthorized", status: "warning"})
+        }
+        const verifyUser = jwt.verify(token, process.env.JWT_SECRET);
+        if(!verifyUser){
+            return res.json({message: "User not found (Invalid user)", status: "warning"})
+        }
+
+        const beneficiaries = await Beneficiary.find({user: verifyUser.id }).sort({ createdAt: -1 });
         res.json({beneficiaries, status: "success"});
     } catch (err) {
         res.json({ message: err });
@@ -14,8 +24,17 @@ router.get("/", async (req, res) => {
 // create new Beneficiary 
 router.post("/", validateBeneficiary, async (req, res) => {
     const { name, identification_no, relationship, email, address, contact } = req.body;
+    const token = req.cookies.token || req.headers['token'] || req.body.token;
 
     try {
+        if(!token || token === null || token === undefined){
+            return res.json({message: "Unauthorized", status: "warning"})
+        }
+        const verifyUser = jwt.verify(token, process.env.JWT_SECRET);
+        if(!verifyUser){
+            return res.json({message: "User not found (Invalid user)", status: "warning"})
+        }
+
         const findBeneficiaryEmail = await Beneficiary.findOne({ email });
         if(findBeneficiaryEmail){
             return res.json({message: "Beneficiary with this email already exists", status: "warning"})
@@ -25,6 +44,7 @@ router.post("/", validateBeneficiary, async (req, res) => {
             return res.json({message: "Identification number already exist.", status: "warning"})
         }
         const beneficiary = new Beneficiary({
+            user: verifyUser.id,
             name,
             identification_no,
             relationship,

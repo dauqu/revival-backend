@@ -41,6 +41,12 @@ app.use('/api/upload', require('./routes/uploadDoc'));
 
 app.use('/api/payment', require('./routes/payments'));
 
+app.use('/api/stream', require('./routes/stream'));
+
+app.use('/api/profile', require('./routes/profile'));
+
+
+
 
 
 // listen app 

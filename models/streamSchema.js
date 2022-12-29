@@ -9,10 +9,10 @@ var streamSchema = new Schema({
         required: true,
         ref: "User"
     },
-    refer: {
-        type: String, 
+    refer: [{
+        type: String,
         required: true
-    },
+    }],
     income: {
         type: Number,
         required: true

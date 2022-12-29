@@ -53,34 +53,34 @@ router.post("/register", validateRegister, async (req, res) => {
         //check referal
         const findReferal = await User.findOne({ username: referal });
         if(!findReferal) {
-            return res.json({ message: "Invalid referal link", status: "warning" });
+            return res.json({ message: "Invalid referal", status: "warning" });
         }
 
         // assign amount 
         let amount = getAmount(level);
-        console.log(amount);
-
-        // //update upperlevel
-        let reducedAmount = await updateUpperLevel(referal, amount, 0, Number(level), true);
-
+        
         // //hash password
         const hashed_password = await bcrypt.hash(password, 10);
-
+        
         //get referrer details
         const referred_by = await User.findOne({ username: referal });
+        // console.log(referred_by._id);
+        
+        // //update upperlevel
+        let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
 
         //create new user
         const new_user = new User({
             name,
-            username,
+            username: username.toLowerCase(),
             email,
             country,
             phone,
             referal,
             level,
             password: hashed_password,
-            total_earning: amount-reducedAmount,
-            total_referral_earning: amount - reducedAmount,
+            total_earning: Number(amount)-Number(reducedAmount),
+            total_referral_earning: Number(amount) - Number(reducedAmount),
             referred_by: referred_by._id
         });
 
