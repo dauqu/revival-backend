@@ -35,8 +35,10 @@ router.post("/login", async (req, res) => {
 })
 
 router.post("/register", validateRegister, async (req, res) => {
+    const { name, username, email, country, phone, password, referal, level } = req.body;
     try {
-        const { name, username, email, country, phone, password, referal, level } = req.body;
+
+        console.log(referal);
 
         //check user name exists
         const findUser = await User.findOne({ username });
@@ -49,46 +51,68 @@ router.post("/register", validateRegister, async (req, res) => {
         if (findUserEmail) {
             return res.json({ message: "Email already exists", status: "warning" });
         }
-
-        //check referal
-        const findReferal = await User.findOne({ username: referal });
-        if(!findReferal) {
-            return res.json({ message: "Invalid referal", status: "warning" });
-        }
-
         // assign amount 
         let amount = getAmount(level);
-        
+
         // //hash password
         const hashed_password = await bcrypt.hash(password, 10);
-        
-        //get referrer details
-        const referred_by = await User.findOne({ username: referal });
-        // console.log(referred_by._id);
-        
-        // //update upperlevel
-        let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
 
-        //create new user
-        const new_user = new User({
-            name,
-            username: username.toLowerCase(),
-            email,
-            country,
-            phone,
-            referal,
-            level,
-            password: hashed_password,
-            total_earning: Number(amount)-Number(reducedAmount),
-            total_referral_earning: Number(amount) - Number(reducedAmount),
-            referred_by: referred_by._id
-        });
+        console.log(referal);
 
-        // // save user 
-        await new_user.save();
+        // if (referal === "" && referal === null && referal === undefined) {
+        //     const new_user = new User({
+        //         name,
+        //         username: username.toLowerCase(),
+        //         email,
+        //         country,
+        //         phone,
+        //         level,
+        //         password: hashed_password
+        //     });
 
-        // response 
-        return res.json({ message: "User created successfully", status: "success" });
+        //     // // save user 
+        //     const saveduser = await new_user.save();
+
+        //     // response 
+        //     return res.json({ message: "User created successfully", status: "success", user: saveduser });
+
+
+        // } else {
+
+        //     //check referal
+        //     const findReferal = await User.findOne({ username: referal });
+        //     if (!findReferal) {
+        //         return res.json({ message: "Invalid referal", status: "warning" });
+        //     }
+
+        //     //get referrer details
+        //     const referred_by = await User.findOne({ username: referal });
+        //     // console.log(referred_by._id);
+
+        //     // //update upperlevel
+        //     let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
+
+        //     //create new user
+        //     const new_ref_user = new User({
+        //         name,
+        //         username: username.toLowerCase(),
+        //         email,
+        //         country,
+        //         phone,
+        //         referal,
+        //         level,
+        //         password: hashed_password,
+        //         total_earning: Number(amount) - Number(reducedAmount),
+        //         total_referral_earning: Number(amount) - Number(reducedAmount),
+        //         referred_by: referred_by._id
+        //     });
+
+        //     // // save user 
+        //     const saved_ref_user = await new_ref_user.save();
+
+        //     // response 
+        //     return res.json({ message: "User created successfully", status: "success", user: saved_ref_user });
+        // }
     }
     catch (e) {
         res.json({ message: e, status: "error" });
@@ -133,10 +157,9 @@ function validateRegister(req, res, next) {
     const { name, username, email, country, phone, password, referal } = req.body;
 
     if (
-        name === "" || username === "" || email === "" || country === "" || phone === "" || password === "" || referal === "" ||
-        name === null || username === null || email === null || country === null || phone === null || password === null || referal === null ||
-        name === undefined || username === undefined || email === undefined || country === undefined || phone === undefined || password === undefined || referal === undefined
-    ) {
+        name === "" || username === "" || email === "" || country === "" || phone === "" || password === "" ||
+        name === null || username === null || email === null || country === null || phone === null || password === null ||
+        name === undefined || username === undefined || email === undefined || country === undefined || phone === undefined || password === undefined) {
         return res.json({ message: "All fields are required", status: "warning" });
     }
 
