@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
     res.json({ message: "Login successful", status: "success", token, user: findUser });
 })
 
-router.post("/register", validateRegister, async (req, res) => {
+router.post("/register", async (req, res) => {
     const { name, username, email, country, phone, password, referal, level } = req.body;
     try {
 
@@ -59,60 +59,42 @@ router.post("/register", validateRegister, async (req, res) => {
 
         console.log(referal);
 
-        // if (referal === "" && referal === null && referal === undefined) {
-        //     const new_user = new User({
-        //         name,
-        //         username: username.toLowerCase(),
-        //         email,
-        //         country,
-        //         phone,
-        //         level,
-        //         password: hashed_password
-        //     });
-
-        //     // // save user 
-        //     const saveduser = await new_user.save();
-
-        //     // response 
-        //     return res.json({ message: "User created successfully", status: "success", user: saveduser });
 
 
-        // } else {
-
-        //     //check referal
-        //     const findReferal = await User.findOne({ username: referal });
-        //     if (!findReferal) {
-        //         return res.json({ message: "Invalid referal", status: "warning" });
-        //     }
-
-        //     //get referrer details
-        //     const referred_by = await User.findOne({ username: referal });
-        //     // console.log(referred_by._id);
-
-        //     // //update upperlevel
-        //     let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
-
-        //     //create new user
-        //     const new_ref_user = new User({
-        //         name,
-        //         username: username.toLowerCase(),
-        //         email,
-        //         country,
-        //         phone,
-        //         referal,
-        //         level,
-        //         password: hashed_password,
-        //         total_earning: Number(amount) - Number(reducedAmount),
-        //         total_referral_earning: Number(amount) - Number(reducedAmount),
-        //         referred_by: referred_by._id
-        //     });
-
-        //     // // save user 
-        //     const saved_ref_user = await new_ref_user.save();
-
-        //     // response 
-        //     return res.json({ message: "User created successfully", status: "success", user: saved_ref_user });
+        //check referal
+        // const findReferal = await User.findOne({ username: referal });
+        // if (!findReferal) {
+        //     return res.json({ message: "Invalid referal", status: "warning" });
         // }
+
+        //get referrer details
+        // const referred_by = await User.findOne({ username: referal });
+        // console.log(referred_by._id);
+
+        // //update upperlevel
+        // let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
+
+        //create new user
+        const new_ref_user = new User({
+            name,
+            username: username.toLowerCase(),
+            email,
+            country,
+            phone,
+            // referal,
+            level,
+            password: hashed_password,
+            // total_earning: Number(amount) - Number(reducedAmount),
+            // total_referral_earning: Number(amount) - Number(reducedAmount),
+            // referred_by: referred_by._id
+        });
+
+        // // save user 
+        const saved_ref_user = await new_ref_user.save();
+
+        // response 
+        return res.json({ message: "User created successfully", status: "success", user: saved_ref_user });
+
     }
     catch (e) {
         res.json({ message: e, status: "error" });
@@ -154,7 +136,7 @@ router.get('/logout', (req, res) => {
 
 
 function validateRegister(req, res, next) {
-    const { name, username, email, country, phone, password, referal } = req.body;
+    const { name, username, email, country, phone, password } = req.body;
 
     if (
         name === "" || username === "" || email === "" || country === "" || phone === "" || password === "" ||

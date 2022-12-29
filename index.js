@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 
 // routes 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/register', require('./routes/register'));
 app.use('/api/beneficiary', require('./routes/beneficiary'));
 app.use('/api/bank', require('./routes/bank'));
 app.use('/api/upload', require('./routes/uploadDoc'));

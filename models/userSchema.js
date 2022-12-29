@@ -1,13 +1,11 @@
-const {default:mongoose, Schema, model } = require('mongoose');
+const { default: mongoose, Schema, model } = require('mongoose');
 
 const userSchema = new Schema({
     name: {
         type: String,
-        required: true
     },
     username: {
         type: String,
-        required: true,
     },
     email: {
         type: String,
@@ -17,19 +15,15 @@ const userSchema = new Schema({
     profile: {
         type: String,
         default: "https://placeimg.com/192/192/people",
-        required: true
     },
     country: {
         type: String,
-        required: true
     },
     phone: {
         type: String,
-        required: true,
     },
     password: {
         type: String,
-        required: true
     },
     passport: {
         type: String,
@@ -43,8 +37,7 @@ const userSchema = new Schema({
         default: 1
     },
     referred_by: {
-        type: mongoose.Types.ObjectId,
-        ref: "User"
+        type: String,
     },
     total_earning: {
         type: Number,
