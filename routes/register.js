@@ -26,31 +26,35 @@ router.post("/", validateRegister, async (req, res) => {
 		profile: req.body.profile || "https://placeimg.com/192/192/peoples",
 		phone: req.body.phone,
 		email: req.body.email,
+		country: req.body.country,
 		username: req.body.username,
 		password: hashed_password,
-		level: req.body.level || 1,
+		level: 1,
 	});
 
-	//check referal
+	//check referal and get user who referred this user
 	const referal = req.body?.referal;
 	const findReferal = await User.findOne({ username: referal });
+
+	// invalid referal 
 	if(referal && !findReferal) {
 		return res.status(200).json({ message: "Invalid referal", status: "error" });
 	}
 
 	if (findReferal) {
-		// get referrer details
-		const referred_by = await User.findOne({ username: referal });
-		// console.log(referred_by._id);
+		// get referal user and update his earning
+		let referred_by = await User.findOneAndUpdate({ username: referal });
+		referred_by.total_referral += 1;
+		await referred_by.save();
 
 		save_user.referred_by = referred_by._id;
 
 		//update upperlevel
-		let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
+		// let reducedAmount = await updateUpperLevel(referred_by._id, amount, 0, 5, true);
 
 		//update user total earning
-		save_user.total_earning = Number(amount) - Number(reducedAmount);
-		save_user.total_referral_earning = Number(amount) - Number(reducedAmount);
+		save_user.total_earning = 0;
+		save_user.total_referral_earning = 0;
 		save_user.total_referral = 0;
 	}
 
