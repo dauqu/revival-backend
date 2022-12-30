@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
     const { name, username, email, country, phone, password, referal, level } = req.body;
     try {
 
-        console.log(referal);
+        // console.log(referal);
 
         //check user name exists
         const findUser = await User.findOne({ username });

@@ -12,8 +12,8 @@ router.get("/", async (req, res) => {
             return res.json({message: "Unauthorized", status: "warning"})
         }
         const verifyUser = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(token);
-        console.log(verifyUser);
+        // console.log(token);
+        // console.log(verifyUser);
         if(!verifyUser){
             return res.json({message: "User not found (Invalid user)", status: "warning"})
         }
